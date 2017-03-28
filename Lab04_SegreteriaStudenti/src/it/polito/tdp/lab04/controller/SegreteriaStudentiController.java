@@ -50,6 +50,7 @@ public class SegreteriaStudentiController {
 	private TextField txtCognome;
 
 	public void setModel(Model model) {
+		this.model = model;
 
 	}
 
@@ -91,5 +92,6 @@ public class SegreteriaStudentiController {
 		assert txtMatricola != null : "fx:id=\"txtMatricola\" was not injected: check your FXML file 'SegreteriaStudenti.fxml'.";
 		assert btnReset != null : "fx:id=\"btnReset\" was not injected: check your FXML file 'SegreteriaStudenti.fxml'.";
 	}
+	
 
 }
