@@ -7,37 +7,62 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-
+import it.polito.tdp.lab04.model.Corso;
 import it.polito.tdp.lab04.model.Studente;
 
 public class StudenteDAO {
 	
-	public List<Studente> getTuttiGliStudenti() {
-
-		final String sql = "SELECT * FROM studente";
-
-		List<Studente> corsi = new LinkedList<Studente>();
-
-		try {
+	public void getStudente(Studente studente){
+		
+		String sql = "SELECT matricola, cognome, nome, CDS FROM studente WHERE matricola = ?";
+		try{
 			Connection conn = ConnectDB.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
-
+			st.setInt(1,studente.getMatricola());
+			
 			ResultSet rs = st.executeQuery();
-
-			while (rs.next()) {
-
-				// Crea un nuovo JAVA Bean Corso
-				//Corso c = new Corso(rs.getString("codins"), rs.getInt("crediti"), rs.getString("nome"), rs.getInt("pd"));
-				// Aggiungi il nuovo Corso alla lista
-				//corsi.add(c);
+			if(rs.next()){
+				studente.setNome(rs.getString("nome"));
+				studente.setCognome(rs.getString("cognome"));
+				studente.setCorsoDiStudi(rs.getString("CDS"));
 			}
-
-			return corsi;
-
-		} catch (SQLException e) {
+			
+			//conn.close();
+			
+		}catch (SQLException e) {
 			// e.printStackTrace();
 			throw new RuntimeException("Errore Db");
 		}
+		
+	}
+	
+	public void getCorsiIscritto(Studente s){
+		
+		String sql = "SELECT codins FROM iscrizione WHERE matricola = ?";
+		
+		try{
+				Connection conn = ConnectDB.getConnection();
+				PreparedStatement st = conn.prepareStatement(sql);
+				st.setInt(1, s.getMatricola());
+
+				ResultSet rs = st.executeQuery();
+				
+				while(rs.next()){
+					Corso c = new Corso(rs.getString("codins"),0,null,0);
+					CorsoDAO dao = new CorsoDAO();
+					dao.getCorso(c);
+					s.aggiungiCorso(c);
+				}
+				//conn.close();
+
+			
+		}catch (SQLException e) {
+			// e.printStackTrace();
+			throw new RuntimeException("Errore Db");
+		}
+		
+		
+		
 	}
 
 
